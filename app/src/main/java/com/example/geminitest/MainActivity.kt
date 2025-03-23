@@ -3,9 +3,19 @@ package com.example.geminitest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -31,8 +41,6 @@ import androidx.navigation.navArgument
 import com.example.geminitest.data.Game
 import com.example.geminitest.data.GameDatabase
 import com.example.geminitest.data.GameRepository
-import com.example.geminitest.GameViewModel
-import com.example.geminitest.GameViewModelFactory
 import com.example.geminitest.ui.theme.GameBacklogTheme
 import kotlinx.coroutines.flow.StateFlow
 
@@ -115,14 +123,14 @@ fun GameListScreen(viewModel: GameViewModel, navController: NavController) {
                     .padding(16.dp),
                 placeholder = { Text(text = "Search") },
             )
-            if(games.isNotEmpty()){
+            if (games.isNotEmpty()) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(games, key = {it.id}) { game ->
-                        GameRow(game = game, viewModel = viewModel, navController = navController)
+                    itemsIndexed(games) { index, game -> // Use itemsIndexed
+                        GameRow(index = index + 1, game = game, viewModel = viewModel, navController = navController) // Pass index + 1
                     }
                 }
             } else {
@@ -131,7 +139,7 @@ fun GameListScreen(viewModel: GameViewModel, navController: NavController) {
                         .fillMaxSize()
                         .padding(innerPadding),
                     contentAlignment = Alignment.Center
-                ){
+                ) {
                     Text(text = "No games yet", style = TextStyle(fontSize = 20.sp))
                 }
             }
@@ -139,9 +147,8 @@ fun GameListScreen(viewModel: GameViewModel, navController: NavController) {
     }
 }
 
-
 @Composable
-fun GameRow(game: Game, viewModel: GameViewModel, navController: NavController) {
+fun GameRow(index: Int, game: Game, viewModel: GameViewModel, navController: NavController) { // Add index parameter
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -154,10 +161,10 @@ fun GameRow(game: Game, viewModel: GameViewModel, navController: NavController) 
                 .fillMaxWidth()
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween // Distribute space
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "${game.id}", // Display auto-generated ID
+                text = "$index", // Display the index (starting from 1)
                 style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
             )
             Spacer(modifier = Modifier.width(16.dp))
@@ -165,11 +172,11 @@ fun GameRow(game: Game, viewModel: GameViewModel, navController: NavController) 
                 Text(text = game.name, style = TextStyle(fontWeight = FontWeight.Bold))
                 Text(text = game.genre, style = TextStyle(color = Color.Gray))
             }
-            IconButton(onClick = { navController.navigate("editGame/${game.id}") }) {
+            IconButton(onClick = { navController.navigate("editGame/${game.id}") }) { // Use game.id for navigation
                 Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit Game", tint = MaterialTheme.colorScheme.primary)
             }
 
-            IconButton(onClick = { viewModel.deleteGame(game) }) {
+            IconButton(onClick = { viewModel.deleteGame(game) }) { // Use game for deletion
                 Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Game", tint = Color.Red)
             }
         }
