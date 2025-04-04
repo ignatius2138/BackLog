@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -165,12 +164,12 @@ fun GameRow(index: Int, game: Game, viewModel: GameViewModel, navController: Nav
         ) {
             Text(
                 text = "$index", // Display the index (starting from 1)
-                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp)
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = game.name, style = TextStyle(fontWeight = FontWeight.Bold))
-                Text(text = game.genre, style = TextStyle(color = Color.Gray))
+                Text(text = game.name, style = MaterialTheme.typography.displayMedium)
+                Text(text = game.genre, style = MaterialTheme.typography.bodyLarge)
             }
             IconButton(onClick = { navController.navigate("editGame/${game.id}") }) { // Use game.id for navigation
                 Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit Game", tint = MaterialTheme.colorScheme.primary)
