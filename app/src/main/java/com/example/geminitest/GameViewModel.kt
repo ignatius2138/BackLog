@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.geminitest.data.Game
 import com.example.geminitest.data.GameRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -67,14 +68,8 @@ class GameViewModel(private val repository: GameRepository) : ViewModel() {
         }
     }
 
-    fun getGameById(gameId: Int): StateFlow<Game?> {
-        val gameFlow = MutableStateFlow<Game?>(null)
-        viewModelScope.launch {
-            repository.getGameById(gameId).collect { game ->
-                gameFlow.value = game
-            }
-        }
-        return gameFlow.asStateFlow()
+    fun getGameById(gameId: Int): Flow<Game?> {
+        return repository.getGameById(gameId)
     }
 }
 

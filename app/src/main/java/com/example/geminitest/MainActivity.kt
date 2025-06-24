@@ -246,20 +246,17 @@ fun AddGameScreen(viewModel: GameViewModel, navController: NavController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditGameScreen(viewModel: GameViewModel, navController: NavController, gameId: Int) {
+    val game = viewModel.getGameById(gameId).collectAsState(initial = null).value
+    var gameName by remember { mutableStateOf("") }
+    var gameGenre by remember { mutableStateOf("") }
 
-    val game: StateFlow<Game?> = remember {
-        viewModel.getGameById(gameId)
+    LaunchedEffect(game?.id) {
+        game?.let {
+            gameName = it.name
+            gameGenre = it.genre
+        }
     }
 
-    val gameValue = game.collectAsState().value
-
-    var gameName by remember { mutableStateOf(gameValue?.name ?: "") }
-    var gameGenre by remember { mutableStateOf(gameValue?.genre ?: "") }
-
-    LaunchedEffect(gameValue) {
-        gameName = gameValue?.name ?: ""
-        gameGenre = gameValue?.genre ?: ""
-    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -279,7 +276,7 @@ fun EditGameScreen(viewModel: GameViewModel, navController: NavController, gameI
             )
         },
     ) { innerPadding ->
-        if(gameValue != null){
+        game?.let { currentGame ->
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
@@ -303,7 +300,7 @@ fun EditGameScreen(viewModel: GameViewModel, navController: NavController, gameI
                 Button(
                     onClick = {
                         if (gameName.isNotBlank() && gameGenre.isNotBlank()) {
-                            val updatedGame = gameValue.copy(name = gameName, genre = gameGenre)
+                            val updatedGame = currentGame.copy(name = gameName, genre = gameGenre)
                             viewModel.updateGame(updatedGame)
                             navController.popBackStack()
                         }
@@ -314,15 +311,13 @@ fun EditGameScreen(viewModel: GameViewModel, navController: NavController, gameI
                     Text("Update Game")
                 }
             }
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
-            ){
-                CircularProgressIndicator()
-            }
+        } ?: Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
         }
     }
 }
