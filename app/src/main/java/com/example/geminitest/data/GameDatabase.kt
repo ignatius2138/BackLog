@@ -21,7 +21,7 @@ abstract class GameDatabase : RoomDatabase() {
                     GameDatabase::class.java,
                     "game_database"
                 )
-                    .fallbackToDestructiveMigration() // Handle database schema changes (destructive in development)
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

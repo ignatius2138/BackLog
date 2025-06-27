@@ -1,8 +1,9 @@
 package com.example.geminitest.data
 
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class GameRepository(private val gameDao: GameDao) {
+class GameRepository @Inject constructor (private val gameDao: GameDao) {
 
     val allGames: Flow<List<Game>> = gameDao.getAllGames()
 
