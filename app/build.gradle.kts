@@ -1,15 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt) // Corrected plugin name and uncommented
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    namespace = "com.example.geminitest" // CORRECTED PACKAGE NAME
+    namespace = "com.example.geminitest"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.geminitest" // CORRECTED PACKAGE NAME
+        applicationId = "com.example.geminitest"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -31,17 +33,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8 // Reverted to Java 8 for compatibility
-        targetCompatibility = JavaVersion.VERSION_1_8 // Reverted to Java 8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "1.8" // Reverted to Java 8
+        jvmTarget = "1.8"
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()//CORRECT
     }
     packaging {
         resources {
@@ -54,31 +56,33 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.material)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
+
     debugImplementation(libs.androidx.compose.ui.tooling)
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    // Room (for local database - preferred for this use case)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)  // Kotlin extensions for Room
+    implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
-
-    // DataStore Preferences (alternative, simpler, but less structured than Room)
     implementation(libs.androidx.datastore.preferences)
 
+    // Hilt dependencies
+    implementation(libs.dagger.hilt.android)
+    kapt(libs.dagger.hilt.compiler)
+    kapt(libs.androidx.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
-    // Material Components for Android (REQUIRED for Theme.Material3...)
-    implementation("com.google.android.material:material:1.12.0") // Use latest stable version!
-
+    // Testing dependencies
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
