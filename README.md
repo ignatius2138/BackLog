@@ -1,35 +1,36 @@
-Gaming BackLog
-BackLog is a modern Android task management app designed to help users organize their gaming backlog with a clean and intuitive interface.
+**Gaming BackLog**
 
-Key Features
+Gaming BackLog is a modern Android task management app designed to help users organize their gaming backlog with a clean and intuitive interface.
 
-Create, edit, and delete games from your backlog
+**Key Features**
 
-Sort and filter games for better organization
+1) Create, edit, and delete games from your backlog
 
-Responsive UI built with modern Android tools
+2) Sort and filter games for better organization
 
-Technologies Used
+3) Responsive UI built with modern Android tools
 
-Kotlin — primary programming language
+**Technologies Used**
 
-Jetpack Compose — declarative UI framework for building responsive interfaces
+**Kotlin** — primary programming language
 
-MVVM (Model-View-ViewModel) — architecture pattern ensuring clear separation of concerns
+**Jetpack Compose** — declarative UI framework for building responsive interfaces
 
-Room — local database for persistent data storage
+**MVVM (Model-View-ViewModel)** — architecture pattern ensuring clear separation of concerns
 
-Coroutines — asynchronous programming for smooth and efficient data handling
+**Room** — local database for persistent data storage
 
-Hilt — dependency injection framework for scalable and testable code
+**Coroutines** — asynchronous programming for smooth and efficient data handling
 
-Navigation Compose — seamless navigation between app screens
+**Hilt** — dependency injection framework for scalable and testable code
 
-ViewModel & StateFlow — managing UI state reactively
+**Navigation Compose** — seamless navigation between app screens
 
-Material Design — consistent and user-friendly UI components
+**ViewModel & StateFlow** — managing UI state reactively
 
-Getting Started
+**Material Design** — consistent and user-friendly UI components
+
+**Getting Started**
 
 Clone the repository:
 git clone https://github.com/ignatius2138/BackLog.git
@@ -37,6 +38,7 @@ Open the project in Android Studio
 
 Build and run on an emulator or physical device
 
-About this Project
-This personal project demonstrates my ability to design and develop Android applications using modern development practices and libraries. 
-It reflects my skills in Kotlin, Jetpack Compose, MVVM architecture, and working with local data persistence, which I actively apply in professional settings.
+**About this Project**
+
+**This personal project demonstrates my ability to design and develop Android applications using modern development practices and libraries. 
+It reflects my skills in Kotlin, Jetpack Compose, MVVM architecture, and working with local data persistence, which I actively apply in professional settings.**
