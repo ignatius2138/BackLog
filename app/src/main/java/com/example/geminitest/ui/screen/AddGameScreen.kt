@@ -33,6 +33,17 @@ fun AddGameScreen(viewModel: GameViewModel, navController: NavController) {
     var gameName by remember { mutableStateOf("") }
     var gameGenre by remember { mutableStateOf("") }
 
+    val onGameNameChange = remember { { newName: String -> gameName = newName } }
+    val onGameGenreChange = remember { { newGenre: String -> gameGenre = newGenre } }
+    val onAddClick = remember(gameName, gameGenre) {
+        {
+            if (gameName.isNotBlank() && gameGenre.isNotBlank()) {
+                viewModel.insertGame(gameName, gameGenre)
+                navController.popBackStack()
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -62,23 +73,18 @@ fun AddGameScreen(viewModel: GameViewModel, navController: NavController) {
         ) {
             OutlinedTextField(
                 value = gameName,
-                onValueChange = { gameName = it },
+                onValueChange = onGameNameChange,
                 label = { Text("Game Name") },
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
                 value = gameGenre,
-                onValueChange = { gameGenre = it },
+                onValueChange = onGameGenreChange,
                 label = { Text("Genre") },
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
-                onClick = {
-                    if (gameName.isNotBlank() && gameGenre.isNotBlank()) {
-                        viewModel.insertGame(gameName, gameGenre)
-                        navController.popBackStack() // Go back to the list
-                    }
-                },
+                onClick = onAddClick,
                 modifier = Modifier.fillMaxWidth(),
                 enabled = gameName.isNotBlank() && gameGenre.isNotBlank()
             ) {

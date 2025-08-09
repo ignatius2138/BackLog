@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,7 +25,7 @@ class GameViewModel @Inject constructor (private val repository: GameRepository)
 
     private val _games = MutableStateFlow<List<Game>>(emptyList())
     val games: StateFlow<List<Game>> = combine(_games, _searchText) { games, text ->
-        if(text.isBlank()){
+        if (text.isBlank()) {
             games
         } else {
             games.filter { game ->
@@ -32,11 +33,12 @@ class GameViewModel @Inject constructor (private val repository: GameRepository)
                         game.genre.contains(text, ignoreCase = true)
             }
         }
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        _games.value
-    )
+    }.distinctUntilChanged()
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            _games.value
+        )
 
     init {
         viewModelScope.launch {

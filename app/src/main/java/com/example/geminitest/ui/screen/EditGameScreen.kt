@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,13 +28,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.geminitest.GameViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditGameScreen(viewModel: GameViewModel, navController: NavController, gameId: Int) {
-    val game = viewModel.getGameById(gameId).collectAsState(initial = null).value
+    val game = viewModel.getGameById(gameId).collectAsStateWithLifecycle(initialValue = null).value
     var gameName by remember { mutableStateOf("") }
     var gameGenre by remember { mutableStateOf("") }
 
@@ -43,6 +43,18 @@ fun EditGameScreen(viewModel: GameViewModel, navController: NavController, gameI
         game?.let {
             gameName = it.name
             gameGenre = it.genre
+        }
+    }
+
+    val onGameNameChange = remember { { newName: String -> gameName = newName } }
+    val onGameGenreChange = remember { { newGenre: String -> gameGenre = newGenre } }
+    val onUpdateClick = remember(gameName, gameGenre, game, navController) {
+        {
+            if (gameName.isNotBlank() && gameGenre.isNotBlank() && game != null) {
+                val updatedGame = game.copy(name = gameName, genre = gameGenre)
+                viewModel.updateGame(updatedGame)
+                navController.popBackStack()
+            }
         }
     }
 
@@ -76,24 +88,18 @@ fun EditGameScreen(viewModel: GameViewModel, navController: NavController, gameI
             ) {
                 OutlinedTextField(
                     value = gameName,
-                    onValueChange = { gameName = it },
+                    onValueChange = onGameNameChange,
                     label = { Text("Game Name") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = gameGenre,
-                    onValueChange = { gameGenre = it },
+                    onValueChange = onGameGenreChange,
                     label = { Text("Genre") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Button(
-                    onClick = {
-                        if (gameName.isNotBlank() && gameGenre.isNotBlank()) {
-                            val updatedGame = currentGame.copy(name = gameName, genre = gameGenre)
-                            viewModel.updateGame(updatedGame)
-                            navController.popBackStack()
-                        }
-                    },
+                    onClick = onUpdateClick,
                     modifier = Modifier.fillMaxWidth(),
                     enabled = gameName.isNotBlank() && gameGenre.isNotBlank()
                 ) {

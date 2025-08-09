@@ -18,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +32,14 @@ import com.example.geminitest.data.Game
 
 @Composable
 fun GameRow(index: Int, game: Game, viewModel: GameViewModel, navController: NavController) {
+
+    val onEditClick = remember(game.id, navController) {
+        { navController.navigate("editGame/${game.id}") }
+    }
+    val onDeleteClick = remember(game) {
+        { viewModel.deleteGame(game) }
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -54,11 +63,11 @@ fun GameRow(index: Int, game: Game, viewModel: GameViewModel, navController: Nav
                 Text(text = game.name, style = MaterialTheme.typography.displayMedium)
                 Text(text = game.genre, style = MaterialTheme.typography.bodyLarge)
             }
-            IconButton(onClick = { navController.navigate("editGame/${game.id}") }) {
+            IconButton(onClick = onEditClick) {
                 Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit Game", tint = MaterialTheme.colorScheme.primary)
             }
 
-            IconButton(onClick = { viewModel.deleteGame(game) }) {
+            IconButton(onClick = onDeleteClick) {
                 Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Game", tint = Color.Red)
             }
         }

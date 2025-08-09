@@ -23,6 +23,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,26 +31,29 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.geminitest.ui.component.GameRow
 import com.example.geminitest.GameViewModel
+import com.example.geminitest.data.Game
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameListScreen(viewModel: GameViewModel, navController: NavController) {
-    val games by viewModel.games.collectAsState()
-    val searchText by viewModel.searchText.collectAsState()
+    val games by viewModel.games.collectAsStateWithLifecycle()
+    val searchText by viewModel.searchText.collectAsStateWithLifecycle()
+
+    val onSearchTextChange = remember(viewModel) { { text: String -> viewModel.onSearchTextChange(text) } }
 
     Scaffold(
         topBar = {
+            val titleTextStyle = remember { TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold) }
+
             CenterAlignedTopAppBar(
                 title = {
                     Text(
                         text = "Game Backlog",
-                        style = TextStyle(
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                        style = titleTextStyle
                     )
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -71,7 +75,7 @@ fun GameListScreen(viewModel: GameViewModel, navController: NavController) {
         Column(modifier = Modifier.padding(innerPadding)) {
             OutlinedTextField(
                 value = searchText,
-                onValueChange = viewModel::onSearchTextChange,
+                onValueChange = onSearchTextChange,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
@@ -83,7 +87,10 @@ fun GameListScreen(viewModel: GameViewModel, navController: NavController) {
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    itemsIndexed(games) { index, game ->
+                    itemsIndexed(
+                        items = games,
+                        key = { _, game -> game.id }
+                    ) { index, game ->
                         GameRow(index = index + 1, game = game, viewModel = viewModel, navController = navController)
                     }
                 }
