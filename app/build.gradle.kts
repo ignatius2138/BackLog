@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,9 +8,21 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+val secretsPropsFile = rootProject.file("secrets.properties")
+val secretsProps = Properties()
+if (secretsPropsFile.exists()) {
+    secretsProps.load(secretsPropsFile.inputStream())
+} else {
+    println("WARNING: secrets.properties not found!")
+}
+
 android {
     namespace = "com.example.geminitest"
     compileSdk = 35
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "com.example.geminitest"
@@ -16,6 +30,9 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField("String", "IGDB_CLIENT_ID", "\"${secretsProps["client_id"] ?: "undefined"}\"")
+        buildConfigField("String", "IGDB_ACCESS_TOKEN", "\"${secretsProps["access_token"] ?: "undefined"}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -64,6 +81,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
 
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("io.ktor:ktor-client-core:3.2.3")
+    implementation("io.ktor:ktor-client-okhttp:3.2.3")
+    implementation("io.ktor:ktor-client-content-negotiation:3.2.3")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:3.2.3")
+
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
@@ -79,7 +102,7 @@ dependencies {
     kapt(libs.androidx.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
-    // Testing dependencies
+    // Testing dependencies\
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

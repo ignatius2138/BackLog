@@ -1,4 +1,4 @@
-package com.example.geminitest.data
+package com.example.geminitest.data.database
 
 import android.content.Context
 import androidx.room.Database

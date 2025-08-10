@@ -1,4 +1,4 @@
-package com.example.geminitest.data
+package com.example.geminitest.data.database
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GameDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun insertGame(game: Game)
 
     @Update

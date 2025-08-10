@@ -3,7 +3,7 @@ package com.example.geminitest
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.geminitest.data.Game
+import com.example.geminitest.data.database.Game
 import com.example.geminitest.data.GameRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

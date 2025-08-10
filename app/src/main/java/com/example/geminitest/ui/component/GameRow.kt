@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.geminitest.GameViewModel
-import com.example.geminitest.data.Game
+import com.example.geminitest.data.database.Game
 
 @Composable
 fun GameRow(index: Int, game: Game, viewModel: GameViewModel, navController: NavController) {

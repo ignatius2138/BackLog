@@ -1,4 +1,4 @@
-package com.example.geminitest.data
+package com.example.geminitest.data.database
 
 import androidx.compose.runtime.Immutable
 import androidx.room.Entity

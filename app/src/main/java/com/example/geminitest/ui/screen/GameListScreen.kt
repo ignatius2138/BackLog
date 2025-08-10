@@ -35,7 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.geminitest.ui.component.GameRow
 import com.example.geminitest.GameViewModel
-import com.example.geminitest.data.Game
+import com.example.geminitest.data.database.Game
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
