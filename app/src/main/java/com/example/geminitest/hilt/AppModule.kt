@@ -3,7 +3,7 @@ package com.example.geminitest.hilt
 import android.content.Context
 import com.example.geminitest.data.database.GameDao
 import com.example.geminitest.data.database.GameDatabase
-import com.example.geminitest.data.GameRepository
+import com.example.geminitest.data.database.GameRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
