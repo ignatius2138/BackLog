@@ -7,6 +7,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.geminitest.navigation.AppNavGraph
 import com.example.geminitest.ui.theme.GameBacklogTheme
+import com.example.geminitest.ui.viewmodel.GameViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

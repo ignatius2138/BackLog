@@ -1,4 +1,4 @@
-package com.example.geminitest
+package com.example.geminitest.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,7 +35,7 @@ class GameViewModel @Inject constructor (private val repository: GameRepository)
     }.distinctUntilChanged()
         .stateIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
+            SharingStarted.Companion.WhileSubscribed(5000),
             _games.value
         )
 
@@ -50,12 +50,12 @@ class GameViewModel @Inject constructor (private val repository: GameRepository)
         _searchText.value = text
     }
 
-    fun insertGame(name: String, genre: String) {
+    /*fun insertGame(name: String, genre: String) {
         viewModelScope.launch {
             val game = Game(name = name, genre = genre)
             repository.insertGame(game)
         }
-    }
+    }*/
 
     fun deleteGame(game: Game) {
         viewModelScope.launch {

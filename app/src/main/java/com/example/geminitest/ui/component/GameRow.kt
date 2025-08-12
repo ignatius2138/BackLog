@@ -27,7 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.geminitest.GameViewModel
+import com.example.geminitest.ui.viewmodel.GameViewModel
 import com.example.geminitest.data.database.Game
 
 @Composable

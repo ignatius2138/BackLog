@@ -1,6 +1,7 @@
 package com.example.geminitest.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -9,7 +10,8 @@ import androidx.navigation.NavType
 import com.example.geminitest.ui.screen.GameListScreen
 import com.example.geminitest.ui.screen.AddGameScreen
 import com.example.geminitest.ui.screen.EditGameScreen
-import com.example.geminitest.GameViewModel
+import com.example.geminitest.ui.viewmodel.AddGameViewModel
+import com.example.geminitest.ui.viewmodel.GameViewModel
 
 @Composable
 fun AppNavGraph(
@@ -21,7 +23,11 @@ fun AppNavGraph(
             GameListScreen(viewModel, navController)
         }
         composable("addGame") {
-            AddGameScreen(viewModel, navController)
+            val addGameViewModel: AddGameViewModel = hiltViewModel()
+            AddGameScreen(
+                viewModel = addGameViewModel,
+                onGameSaved = { navController.popBackStack() }
+            )
         }
         composable(
             route = "editGame/{gameId}",

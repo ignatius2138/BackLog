@@ -2,8 +2,9 @@ package com.example.geminitest.data.network
 
 import com.example.geminitest.BuildConfig
 import io.ktor.client.*
+import javax.inject.Inject
 
-class GameCoverRepository(
+class GameCoverRepository @Inject constructor(
     private val client: HttpClient
 ) : IGameCoverRepository {
 
