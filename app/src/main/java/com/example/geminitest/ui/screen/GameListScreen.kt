@@ -21,7 +21,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,19 +30,22 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.example.geminitest.ui.component.GameRow
+import com.example.geminitest.ui.viewmodel.AddGameViewModel
 import com.example.geminitest.ui.viewmodel.GameViewModel
-import com.example.geminitest.data.database.Game
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameListScreen(viewModel: GameViewModel, navController: NavController) {
-    val games by viewModel.games.collectAsStateWithLifecycle()
-    val searchText by viewModel.searchText.collectAsStateWithLifecycle()
-
-    val onSearchTextChange = remember(viewModel) { { text: String -> viewModel.onSearchTextChange(text) } }
+fun GameListScreen(
+    gameViewModel: GameViewModel = hiltViewModel(),
+    navigateToAdd: () -> Unit,
+    navigateToEdit: (Int) -> Unit
+) {
+    val games by gameViewModel.games.collectAsStateWithLifecycle()
+    val searchText by gameViewModel.searchText.collectAsStateWithLifecycle()
+    val onSearchTextChange = remember(gameViewModel) { { text: String -> gameViewModel.onSearchTextChange(text) } }
 
     Scaffold(
         topBar = {
@@ -64,7 +66,7 @@ fun GameListScreen(viewModel: GameViewModel, navController: NavController) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate("addGame") },
+                onClick = navigateToAdd,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Color.White
             ) {
@@ -91,7 +93,12 @@ fun GameListScreen(viewModel: GameViewModel, navController: NavController) {
                         items = games,
                         key = { _, game -> game.id }
                     ) { index, game ->
-                        GameRow(index = index + 1, game = game, viewModel = viewModel, navController = navController)
+                        GameRow(
+                            index = index + 1,
+                            game = game,
+                            onEditClick = { navigateToEdit(game.id) },
+                            onDeleteClick = { gameViewModel.deleteGame(game) }
+                        )
                     }
                 }
             } else {

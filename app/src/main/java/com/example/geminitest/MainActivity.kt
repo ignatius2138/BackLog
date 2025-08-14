@@ -3,11 +3,9 @@ package com.example.geminitest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.geminitest.navigation.AppNavGraph
 import com.example.geminitest.ui.theme.GameBacklogTheme
-import com.example.geminitest.ui.viewmodel.GameViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -18,11 +16,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             GameBacklogTheme {
                 val navController = rememberNavController()
-                val viewModel: GameViewModel = hiltViewModel()
 
                 AppNavGraph(
-                    navController = navController,
-                    viewModel = viewModel
+                    navController = navController
                 )
             }
         }

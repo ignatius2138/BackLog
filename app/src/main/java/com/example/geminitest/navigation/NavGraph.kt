@@ -15,26 +15,24 @@ import com.example.geminitest.ui.viewmodel.GameViewModel
 
 @Composable
 fun AppNavGraph(
-    navController: NavHostController,
-    viewModel: GameViewModel
+    navController: NavHostController
 ) {
     NavHost(navController = navController, startDestination = "gameList") {
         composable("gameList") {
-            GameListScreen(viewModel, navController)
+            GameListScreen(
+                navigateToAdd = { navController.navigate("addGame") },
+                navigateToEdit = { gameId -> navController.navigate("editGame/$gameId") }
+            )
         }
         composable("addGame") {
-            val addGameViewModel: AddGameViewModel = hiltViewModel()
-            AddGameScreen(
-                viewModel = addGameViewModel,
-                onGameSaved = { navController.popBackStack() }
-            )
+            AddGameScreen(onGameSaved = { navController.popBackStack() })
         }
         composable(
             route = "editGame/{gameId}",
             arguments = listOf(navArgument("gameId") { type = NavType.IntType })
         ) { backStackEntry ->
             val gameId = backStackEntry.arguments?.getInt("gameId") ?: -1
-            EditGameScreen(viewModel, navController, gameId)
+            EditGameScreen(gameId = gameId, onNavigateBack = { navController.popBackStack()})
         }
     }
 }

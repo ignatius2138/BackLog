@@ -28,14 +28,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.example.geminitest.ui.viewmodel.GameViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditGameScreen(viewModel: GameViewModel, navController: NavController, gameId: Int) {
-    val game = viewModel.getGameById(gameId).collectAsStateWithLifecycle(initialValue = null).value
+fun EditGameScreen(gameViewModel: GameViewModel = hiltViewModel(), gameId: Int, onNavigateBack: () -> Unit) {
+    val game = gameViewModel.getGameById(gameId).collectAsStateWithLifecycle(initialValue = null).value
     var gameName by remember { mutableStateOf("") }
     var gameGenre by remember { mutableStateOf("") }
 
@@ -48,12 +48,12 @@ fun EditGameScreen(viewModel: GameViewModel, navController: NavController, gameI
 
     val onGameNameChange = remember { { newName: String -> gameName = newName } }
     val onGameGenreChange = remember { { newGenre: String -> gameGenre = newGenre } }
-    val onUpdateClick = remember(gameName, gameGenre, game, navController) {
+    val onUpdateClick = remember(gameName, gameGenre, game) {
         {
             if (gameName.isNotBlank() && gameGenre.isNotBlank() && game != null) {
                 val updatedGame = game.copy(name = gameName, genre = gameGenre)
-                viewModel.updateGame(updatedGame)
-                navController.popBackStack()
+                gameViewModel.updateGame(updatedGame)
+                onNavigateBack()
             }
         }
     }
