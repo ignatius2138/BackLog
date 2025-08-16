@@ -65,8 +65,9 @@ class AddGameViewModel @Inject constructor(
         viewModelScope.launch {
             val name = gameName.value.trim()
             val genre = gameGenre.value.trim()
+            val coverUrl = (coverUiState.value as? CoverUiState.Success)?.url.orEmpty()
             if (name.isNotBlank() && genre.isNotBlank()) {
-                gameRepository.insertGame(Game(name = name, genre = genre))
+                gameRepository.insertGame(Game(name = name, genre = genre, coverUrl = coverUrl))
             }
         }
     }

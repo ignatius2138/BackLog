@@ -88,7 +88,7 @@ fun AddGameScreen(
                 is CoverUiState.Error -> Text("Error: ${(coverState as CoverUiState.Error).message}")
                 is CoverUiState.Success -> {
                     AsyncImage(
-                        model = (coverState as CoverUiState.Success).url,
+                        model = (coverState as? CoverUiState.Success)?.url.orEmpty(),
                         contentDescription = "Game cover",
                         modifier = Modifier.fillMaxWidth(),
                         contentScale = ContentScale.Fit

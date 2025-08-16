@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.example.geminitest.R
 import com.example.geminitest.data.database.Game
 import com.example.geminitest.ui.viewmodel.AddGameViewModel
 
@@ -40,10 +42,8 @@ fun GameRow(
     index: Int,
     game: Game,
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit,
-    addGameViewModel: AddGameViewModel = hiltViewModel()
+    onDeleteClick: () -> Unit
 )  {
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -65,7 +65,9 @@ fun GameRow(
             )
 
             AsyncImage(
-                model = "https://upload.wikimedia.org/wikipedia/commons/7/74/A-Cat.jpg",
+                model = game.coverUrl.ifBlank {
+                    stringResource(R.string.blank_url_placeholder)
+                },
                 contentDescription = "Game cover",
                 modifier = Modifier
                     .weight(0.2f)

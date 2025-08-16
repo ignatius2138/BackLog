@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Your Gaming Backlog</string>
+    <string name="blank_url_placeholder">https://upload.wikimedia.org/wikipedia/commons/7/74/A-Cat.jpg</string>
 </resources>
