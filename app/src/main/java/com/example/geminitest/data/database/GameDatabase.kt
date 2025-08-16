@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Game::class], version = 2, exportSchema = false)
+@Database(entities = [Game::class], version = 3, exportSchema = false)
 abstract class GameDatabase : RoomDatabase() {
 
     abstract fun gameDao(): GameDao
@@ -22,6 +22,13 @@ abstract class GameDatabase : RoomDatabase() {
             }
         }
 
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE game_backlog ADD COLUMN releaseYear TEXT")
+                database.execSQL("ALTER TABLE game_backlog ADD COLUMN description TEXT")
+            }
+        }
+
         fun getDatabase(context: Context): GameDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -29,7 +36,7 @@ abstract class GameDatabase : RoomDatabase() {
                     GameDatabase::class.java,
                     "game_database"
                 )
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .build()
                 INSTANCE = instance
                 instance

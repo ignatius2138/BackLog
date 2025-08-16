@@ -11,5 +11,7 @@ data class Game(
     val id: Int = 0,
     val name: String,
     val genre: String,
-    val coverUrl: String
+    val coverUrl: String,
+    val releaseYear: String? = null,
+    val description: String? = null
 )

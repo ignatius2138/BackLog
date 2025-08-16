@@ -3,7 +3,7 @@ package com.example.geminitest.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geminitest.data.database.Game
-import com.example.geminitest.data.database.GameRepository
+import com.example.geminitest.data.database.RoomGameRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GameViewModel @Inject constructor (private val repository: GameRepository) : ViewModel() {
+class GameViewModel @Inject constructor (private val repository: RoomGameRepository) : ViewModel() {
 
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
@@ -49,13 +49,6 @@ class GameViewModel @Inject constructor (private val repository: GameRepository)
     fun onSearchTextChange(text: String){
         _searchText.value = text
     }
-
-    /*fun insertGame(name: String, genre: String) {
-        viewModelScope.launch {
-            val game = Game(name = name, genre = genre)
-            repository.insertGame(game)
-        }
-    }*/
 
     fun deleteGame(game: Game) {
         viewModelScope.launch {

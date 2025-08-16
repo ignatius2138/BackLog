@@ -5,13 +5,19 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Game(
-    val id: Int,
-    val name: String? = null,
-    val cover: Cover? = null
+    val name: String,
+    val cover: Cover?,
+    val genres: List<Genre>?,
+    val first_release_date: Long?,
+    val summary: String?
 )
 
 @Serializable
 data class Cover(
-    val id: Int? = null,
-    @SerialName("url") val imageUrl: String? = null
+    val url: String
+)
+
+@Serializable
+data class Genre(
+    val name: String
 )

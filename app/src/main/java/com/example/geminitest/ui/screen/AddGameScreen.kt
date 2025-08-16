@@ -2,10 +2,11 @@ package com.example.geminitest.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -17,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -39,64 +39,82 @@ fun AddGameScreen(
 ) {
     val gameName by viewModel.gameName.collectAsStateWithLifecycle()
     val gameGenre by viewModel.gameGenre.collectAsStateWithLifecycle()
+    val releaseYear by viewModel.releaseYear.collectAsStateWithLifecycle()
+    val description by viewModel.description.collectAsStateWithLifecycle()
     val coverState by viewModel.coverUiState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Add Game",
-                        style = TextStyle(
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                },
+                title = { Text("Add Game", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)) },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = Color.White
                 )
             )
-        },
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(16.dp)
                 .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            OutlinedTextField(
-                value = gameName,
-                onValueChange = viewModel::onGameNameChange,
-                label = { Text("Game Name") },
-                modifier = Modifier.fillMaxWidth()
-            )
-            OutlinedTextField(
-                value = gameGenre,
-                onValueChange = viewModel::onGameGenreChange,
-                label = { Text("Genre") },
-                modifier = Modifier.fillMaxWidth()
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                AsyncImage(
+                    model = (coverState as? CoverUiState.Success)?.url.orEmpty(),
+                    contentDescription = "Game cover",
+                    modifier = Modifier
+                        .width(120.dp)
+                        .aspectRatio(1f),
+                    contentScale = ContentScale.Crop
+                )
 
-            when (coverState) {
-                is CoverUiState.Idle -> Text("Enter name of the game to see cover")
-                is CoverUiState.Loading -> CircularProgressIndicator()
-                is CoverUiState.Empty -> Text("Cover could not be found")
-                is CoverUiState.Error -> Text("Error: ${(coverState as CoverUiState.Error).message}")
-                is CoverUiState.Success -> {
-                    AsyncImage(
-                        model = (coverState as? CoverUiState.Success)?.url.orEmpty(),
-                        contentDescription = "Game cover",
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = gameName,
+                        onValueChange = viewModel::onGameNameChange,
+                        label = { Text("Game Name") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    OutlinedTextField(
+                        value = gameGenre,
+                        onValueChange = viewModel::onGameGenreChange,
+                        label = { Text("Genre") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    OutlinedTextField(
+                        value = releaseYear,
+                        onValueChange = viewModel::onReleaseYearChange,
+                        label = { Text("Release Year") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    OutlinedTextField(
+                        value = description,
+                        onValueChange = viewModel::onDescriptionChange,
+                        label = { Text("Description") },
                         modifier = Modifier.fillMaxWidth(),
-                        contentScale = ContentScale.Fit
+                        maxLines = 3
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            when (coverState) {
+                is CoverUiState.Loading -> CircularProgressIndicator()
+                is CoverUiState.Empty -> Text("Cover could not be found")
+                is CoverUiState.Error -> Text("Error: ${(coverState as CoverUiState.Error).message}")
+                else -> {}
+            }
 
             Button(
                 onClick = {
@@ -108,7 +126,6 @@ fun AddGameScreen(
             ) {
                 Text("Add Game")
             }
-
         }
     }
 }

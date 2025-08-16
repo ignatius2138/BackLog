@@ -12,7 +12,7 @@ suspend fun fetchGames(
     client: HttpClient
 ): List<Game> {
     val bodyText = """
-        fields name, cover.url;
+        fields name, cover.url, genres.name, first_release_date, summary;
         search "$query";
         limit 1;
     """.trimIndent()

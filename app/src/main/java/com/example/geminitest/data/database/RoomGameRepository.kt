@@ -3,7 +3,7 @@ package com.example.geminitest.data.database
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GameRepository @Inject constructor (private val gameDao: GameDao) {
+class RoomGameRepository @Inject constructor (private val gameDao: GameDao) {
 
     val allGames: Flow<List<Game>> = gameDao.getAllGames()
 
