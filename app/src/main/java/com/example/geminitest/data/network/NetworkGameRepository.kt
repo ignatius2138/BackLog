@@ -4,6 +4,7 @@ import com.example.geminitest.BuildConfig
 import io.ktor.client.*
 import java.time.Instant
 import java.time.ZoneId
+import java.util.UUID
 import javax.inject.Inject
 
 class NetworkGameRepository @Inject constructor(
@@ -45,6 +46,7 @@ class NetworkGameRepository @Inject constructor(
 }
 
 data class GameData(
+    val id: String = UUID.randomUUID().toString(),
     val name: String,
     val coverUrl: String,
     val genre: String,

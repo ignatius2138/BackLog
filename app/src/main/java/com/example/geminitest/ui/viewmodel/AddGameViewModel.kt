@@ -6,6 +6,7 @@ import com.example.geminitest.data.database.Game
 import com.example.geminitest.data.database.RoomGameRepository
 import com.example.geminitest.data.network.GameData
 import com.example.geminitest.data.network.NetworkGameRepository
+import com.example.geminitest.util.toEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -46,21 +47,8 @@ class AddGameViewModel @Inject constructor(
         _selectedGame.value = _selectedGame.value?.copy(name = newName) ?: _selectedGame.value
     }
 
-    fun onGenreChange(newGenre: String) {
-        _selectedGame.value = _selectedGame.value?.copy(genre = newGenre)
-    }
-
-    fun onReleaseYearChange(newYear: String) {
-        _selectedGame.value = _selectedGame.value?.copy(releaseYear = newYear)
-    }
-
-    fun onDescriptionChange(newDesc: String) {
-        _selectedGame.value = _selectedGame.value?.copy(description = newDesc)
-    }
-
     fun selectGame(gameData: GameData) {
         _selectedGame.value = gameData
-        gameName.value = gameData.name
         _coverUiState.value = if (gameData.coverUrl.isNotBlank()) {
             CoverUiState.Success(gameData.coverUrl)
         } else CoverUiState.Empty
@@ -84,16 +72,7 @@ class AddGameViewModel @Inject constructor(
     fun saveGame() {
         val gameData = _selectedGame.value ?: return
         viewModelScope.launch {
-            val game = Game(
-                name = gameData.name.trim(),
-                genre = gameData.genre.trim(),
-                coverUrl = gameData.coverUrl,
-                releaseYear = gameData.releaseYear.trim(),
-                description = gameData.description.trim()
-            )
-            if (game.name.isNotBlank() && game.genre.isNotBlank()) {
-                gameRepository.insertGame(game)
-            }
+            gameRepository.insertGame(gameData.toEntity())
         }
     }
 }

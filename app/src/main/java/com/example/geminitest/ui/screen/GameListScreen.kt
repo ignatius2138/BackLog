@@ -95,7 +95,13 @@ fun GameListScreen(
                     ) { index, game ->
                         GameRow(
                             index = index + 1,
-                            game = game,
+                            name = game.name,
+                            coverUrl = game.coverUrl,
+                            genre = game.genre,
+                            releaseYear = game.releaseYear.orEmpty(),
+                            description = game.description.orEmpty(),
+                            onClick = {},
+                            showActions = true,
                             onEditClick = { navigateToEdit(game.id) },
                             onDeleteClick = { gameViewModel.deleteGame(game) }
                         )

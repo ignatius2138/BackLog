@@ -1,5 +1,6 @@
 package com.example.geminitest.ui.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,51 +26,55 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.geminitest.R
-import com.example.geminitest.data.database.Game
 
 @Composable
 fun GameRow(
     index: Int,
-    game: Game,
-    onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    name: String,
+    coverUrl: String,
+    genre: String,
+    releaseYear: String,
+    description: String,
+    isSelected: Boolean = false,
+    showActions: Boolean = true,
+    onClick: () -> Unit = {},
+    onEditClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {}
 ) {
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        shape = RoundedCornerShape(12.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected)
+                MaterialTheme.colorScheme.primaryContainer
+            else
+                MaterialTheme.colorScheme.surfaceVariant
+        )
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "$index",
-                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
                     modifier = Modifier.weight(0.1f),
+                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
 
                 AsyncImage(
-                    model = game.coverUrl.ifBlank {
-                        stringResource(R.string.blank_url_placeholder)
-                    },
-                    contentDescription = stringResource(R.string.game_cover_content_description),
+                    model = coverUrl.ifBlank { "" },
+                    contentDescription = "Game cover",
                     modifier = Modifier
                         .weight(0.2f)
                         .aspectRatio(1f)
@@ -85,62 +90,59 @@ fun GameRow(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        text = game.name,
+                        text = name,
                         style = MaterialTheme.typography.headlineSmall,
                         textAlign = TextAlign.Start
                     )
-
                     Spacer(modifier = Modifier.height(4.dp))
-
                     Text(
-                        text = game.genre,
+                        text = genre,
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Start
                     )
-
                     Spacer(modifier = Modifier.height(4.dp))
-
-                    game.releaseYear?.takeIf { it.isNotBlank() }?.let { year ->
-                        Text(
-                            text = year,
-                            style = MaterialTheme.typography.bodyLarge,
-                            textAlign = TextAlign.Start
-                        )
-                    }
+                    Text(
+                        text = releaseYear,
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Start
+                    )
                 }
 
-                Column(
-                    modifier = Modifier.weight(0.2f),
-                    verticalArrangement = Arrangement.SpaceEvenly,
-                    horizontalAlignment = Alignment.End
-                ) {
-                    IconButton(onClick = onEditClick) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit Game",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    IconButton(onClick = onDeleteClick) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete Game",
-                            tint = Color.Red
-                        )
+                if (showActions) {
+                    Column(
+                        modifier = Modifier.weight(0.2f),
+                        verticalArrangement = Arrangement.SpaceEvenly,
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        IconButton(onClick = onEditClick) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Edit Game",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        IconButton(onClick = onDeleteClick) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Delete Game",
+                                tint = Color.Red
+                            )
+                        }
                     }
                 }
             }
 
-            game.description?.takeIf { it.isNotBlank() }?.let { description ->
+            /*if (description.isNotBlank()) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Start,
                     maxLines = 5,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Justify,
+                    softWrap = true
                 )
-            }
+            }*/
         }
     }
 }
