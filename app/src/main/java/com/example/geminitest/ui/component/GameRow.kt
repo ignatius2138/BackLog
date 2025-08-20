@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -68,10 +69,11 @@ fun GameRow(
                     model = game.coverUrl.ifBlank {
                         stringResource(R.string.blank_url_placeholder)
                     },
-                    contentDescription = "Game cover",
+                    contentDescription = stringResource(R.string.game_cover_content_description),
                     modifier = Modifier
                         .weight(0.2f)
-                        .aspectRatio(1f),
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(12.dp)),
                     contentScale = ContentScale.Crop
                 )
 

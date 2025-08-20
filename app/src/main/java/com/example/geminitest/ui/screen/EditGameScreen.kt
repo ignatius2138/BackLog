@@ -38,20 +38,30 @@ fun EditGameScreen(gameViewModel: GameViewModel = hiltViewModel(), gameId: Int, 
     val game = gameViewModel.getGameById(gameId).collectAsStateWithLifecycle(initialValue = null).value
     var gameName by remember { mutableStateOf("") }
     var gameGenre by remember { mutableStateOf("") }
+    var releaseYear by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var coverUrl by remember { mutableStateOf("") }
 
     LaunchedEffect(game?.id) {
         game?.let {
             gameName = it.name
             gameGenre = it.genre
+            releaseYear = it.releaseYear.orEmpty()
+            description = it.description.orEmpty()
+            coverUrl = it.coverUrl
         }
     }
 
-    val onGameNameChange = remember { { newName: String -> gameName = newName } }
-    val onGameGenreChange = remember { { newGenre: String -> gameGenre = newGenre } }
-    val onUpdateClick = remember(gameName, gameGenre, game) {
+    val onUpdateClick = remember(gameName, gameGenre, releaseYear, description, coverUrl, game) {
         {
             if (gameName.isNotBlank() && gameGenre.isNotBlank() && game != null) {
-                val updatedGame = game.copy(name = gameName, genre = gameGenre)
+                val updatedGame = game.copy(
+                    name = gameName,
+                    genre = gameGenre,
+                    releaseYear = releaseYear,
+                    description = description,
+                    coverUrl = coverUrl
+                )
                 gameViewModel.updateGame(updatedGame)
                 onNavigateBack()
             }
@@ -88,15 +98,28 @@ fun EditGameScreen(gameViewModel: GameViewModel = hiltViewModel(), gameId: Int, 
             ) {
                 OutlinedTextField(
                     value = gameName,
-                    onValueChange = onGameNameChange,
+                    onValueChange = { gameName = it },
                     label = { Text("Game Name") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = gameGenre,
-                    onValueChange = onGameGenreChange,
+                    onValueChange = { gameGenre = it },
                     label = { Text("Genre") },
                     modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = releaseYear,
+                    onValueChange = { releaseYear = it },
+                    label = { Text("Release Year") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Description") },
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 5
                 )
                 Button(
                     onClick = onUpdateClick,
