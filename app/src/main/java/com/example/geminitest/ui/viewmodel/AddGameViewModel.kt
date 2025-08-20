@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geminitest.data.database.Game
 import com.example.geminitest.data.database.RoomGameRepository
+import com.example.geminitest.data.network.GameData
 import com.example.geminitest.data.network.NetworkGameRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -19,14 +20,11 @@ class AddGameViewModel @Inject constructor(
     var gameName = MutableStateFlow("")
         private set
 
-    var gameGenre = MutableStateFlow("")
-        private set
+    private val _searchResults = MutableStateFlow<List<GameData>>(emptyList())
+    val searchResults: StateFlow<List<GameData>> = _searchResults.asStateFlow()
 
-    var releaseYear = MutableStateFlow("")
-        private set
-
-    var description = MutableStateFlow("")
-        private set
+    private val _selectedGame = MutableStateFlow<GameData?>(null)
+    val selectedGame: StateFlow<GameData?> = _selectedGame.asStateFlow()
 
     private val _coverUiState = MutableStateFlow<CoverUiState>(CoverUiState.Idle)
     val coverUiState: StateFlow<CoverUiState> = _coverUiState.asStateFlow()
@@ -34,33 +32,47 @@ class AddGameViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             gameName
-                .debounce(2000)
+                .debounce(500)
                 .filter { it.isNotBlank() }
                 .distinctUntilChanged()
                 .collect { query ->
-                    loadGameData(query)
+                    searchGames(query)
                 }
         }
     }
 
-    fun onGameNameChange(newName: String) { gameName.value = newName }
-    fun onGameGenreChange(newGenre: String) { gameGenre.value = newGenre }
-    fun onReleaseYearChange(newYear: String) { releaseYear.value = newYear }
-    fun onDescriptionChange(newDesc: String) { description.value = newDesc }
+    fun onGameNameChange(newName: String) {
+        gameName.value = newName
+        _selectedGame.value = _selectedGame.value?.copy(name = newName) ?: _selectedGame.value
+    }
 
-    private fun loadGameData(name: String) {
+    fun onGenreChange(newGenre: String) {
+        _selectedGame.value = _selectedGame.value?.copy(genre = newGenre)
+    }
+
+    fun onReleaseYearChange(newYear: String) {
+        _selectedGame.value = _selectedGame.value?.copy(releaseYear = newYear)
+    }
+
+    fun onDescriptionChange(newDesc: String) {
+        _selectedGame.value = _selectedGame.value?.copy(description = newDesc)
+    }
+
+    fun selectGame(gameData: GameData) {
+        _selectedGame.value = gameData
+        gameName.value = gameData.name
+        _coverUiState.value = if (gameData.coverUrl.isNotBlank()) {
+            CoverUiState.Success(gameData.coverUrl)
+        } else CoverUiState.Empty
+    }
+
+    private fun searchGames(query: String) {
         viewModelScope.launch {
             _coverUiState.value = CoverUiState.Loading
             try {
-                val gameData = networkRepository.getGameData(name)
-                if (gameData != null) {
-                    _coverUiState.value = if (
-                        gameData.coverUrl.isNotBlank()
-                    ) CoverUiState.Success(gameData.coverUrl) else CoverUiState.Empty
-                    gameGenre.value = gameData.genre
-                    releaseYear.value = gameData.releaseYear
-                    description.value = gameData.description
-                } else {
+                val results = networkRepository.searchGames(query)
+                _searchResults.value = results
+                if (results.isEmpty()) {
                     _coverUiState.value = CoverUiState.Empty
                 }
             } catch (e: Exception) {
@@ -70,13 +82,14 @@ class AddGameViewModel @Inject constructor(
     }
 
     fun saveGame() {
+        val gameData = _selectedGame.value ?: return
         viewModelScope.launch {
             val game = Game(
-                name = gameName.value.trim(),
-                genre = gameGenre.value.trim(),
-                coverUrl = (coverUiState.value as? CoverUiState.Success)?.url.orEmpty(),
-                releaseYear = releaseYear.value.trim(),
-                description = description.value.trim()
+                name = gameData.name.trim(),
+                genre = gameData.genre.trim(),
+                coverUrl = gameData.coverUrl,
+                releaseYear = gameData.releaseYear.trim(),
+                description = gameData.description.trim()
             )
             if (game.name.isNotBlank() && game.genre.isNotBlank()) {
                 gameRepository.insertGame(game)

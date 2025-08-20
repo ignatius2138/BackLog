@@ -17,6 +17,7 @@ hiltNavigationCompose = "1.2.0"
 daggerHilt = "2.57"
 androidxHiltCompiler = "1.2.0"
 material = "1.12.0"
+ui = "1.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCoreKtx" }
@@ -46,6 +47,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspressoCore" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 
 [bundles]
 lifecycle = ["lifecycle-runtime-ktx", "androidx-lifecycle-viewmodel-compose"]
