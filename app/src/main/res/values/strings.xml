@@ -2,6 +2,6 @@
     <string name="app_name">Your Gaming Backlog</string>
     <string name="blank_url_placeholder">https://upload.wikimedia.org/wikipedia/commons/7/74/A-Cat.jpg</string>
     <string name="game_cover_content_description">Game cover</string>
-    <string name="enter_the_name_of_the_game">Enter the Name of the Game</string>
+    <string name="enter_the_name_of_the_game">Find your game</string>
     <string name="add_game_button_label">Add Game</string>
 </resources>

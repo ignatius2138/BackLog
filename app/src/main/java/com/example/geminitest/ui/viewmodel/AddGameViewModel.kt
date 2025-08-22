@@ -2,7 +2,6 @@ package com.example.geminitest.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.geminitest.data.database.Game
 import com.example.geminitest.data.database.RoomGameRepository
 import com.example.geminitest.data.network.GameData
 import com.example.geminitest.data.network.NetworkGameRepository
@@ -18,8 +17,8 @@ class AddGameViewModel @Inject constructor(
     private val networkRepository: NetworkGameRepository
 ) : ViewModel() {
 
-    var gameName = MutableStateFlow("")
-        private set
+    private val _gameName = MutableStateFlow("")
+    val gameName: StateFlow<String> = _gameName.asStateFlow()
 
     private val _searchResults = MutableStateFlow<List<GameData>>(emptyList())
     val searchResults: StateFlow<List<GameData>> = _searchResults.asStateFlow()
@@ -32,8 +31,8 @@ class AddGameViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            gameName
-                .debounce(500)
+            _gameName
+                .debounce(1000)
                 .filter { it.isNotBlank() }
                 .distinctUntilChanged()
                 .collect { query ->
@@ -43,8 +42,13 @@ class AddGameViewModel @Inject constructor(
     }
 
     fun onGameNameChange(newName: String) {
-        gameName.value = newName
-        _selectedGame.value = _selectedGame.value?.copy(name = newName) ?: _selectedGame.value
+        _gameName.value = newName
+
+        if (newName.isBlank()) {
+            _searchResults.value = emptyList()
+            _selectedGame.value = null
+            _coverUiState.value = CoverUiState.Idle
+        }
     }
 
     fun selectGame(gameData: GameData) {
