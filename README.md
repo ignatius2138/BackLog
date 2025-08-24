@@ -2,6 +2,10 @@
 
 Gaming BackLog is a modern Android task management app designed to help users organize their gaming backlog with a clean and intuitive interface.
 
+**Attention**
+
+To use this app you need to add a file called secrets.properties to the root of your project folder and input yout twitch Api keys like this: client_id=your_client_id access_token=your_access_token
+
 **Key Features**
 
 1) Create, edit, and delete games from your backlog
