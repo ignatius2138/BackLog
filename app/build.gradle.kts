@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    id("com.google.protobuf")
 }
 
 val secretsPropsFile = rootProject.file("secrets.properties")
@@ -39,6 +40,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        manifestPlaceholders["appAuthRedirectScheme"] = "com.example.geminitest"
     }
 
     buildTypes {
@@ -66,6 +69,22 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.3"
+    }
+
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
         }
     }
 }
@@ -98,6 +117,13 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.datastore.preferences)
+    implementation("androidx.security:security-crypto:1.1.0")
+    // Jetpack DataStore (основная библиотека)
+    implementation("androidx.datastore:datastore:1.1.7")
+
+    // Protocol Buffers для генерации модели данных
+    implementation("com.google.protobuf:protobuf-javalite:4.32.0")
+    implementation("net.openid:appauth:0.11.1")
 
     // Hilt dependencies
     implementation(libs.dagger.hilt.android)

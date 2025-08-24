@@ -26,6 +26,19 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="net.openid.appauth.RedirectUriReceiverActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="${appAuthRedirectScheme}"
+                    android:host="callback" />
+            </intent-filter>
+        </activity>
+
         <!-- You don't need to declare other activities here UNLESS
              you add more activities beyond MainActivity.  Compose Navigation
              handles navigation within MainActivity. -->
