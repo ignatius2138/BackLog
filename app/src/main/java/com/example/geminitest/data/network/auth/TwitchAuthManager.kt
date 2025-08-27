@@ -17,7 +17,7 @@ import kotlin.coroutines.resumeWithException
 
 class TwitchAuthManager(
     private val context: Context,
-    private val clientId: String,
+    val clientId: String,
     private val redirectUri: String,
     private val tokenManager: ITokenManager
 ) {
@@ -26,7 +26,7 @@ class TwitchAuthManager(
         "https://id.twitch.tv/oauth2/token".toUri()
     )
 
-    private val authService by lazy { AuthorizationService(context) }
+    val authService by lazy { AuthorizationService(context) }
 
     fun getAuthorizationRequest(): AuthorizationRequest {
         return AuthorizationRequest.Builder(

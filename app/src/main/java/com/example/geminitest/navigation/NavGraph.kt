@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.NavType
 import com.example.geminitest.ui.screen.GameListScreen
 import com.example.geminitest.ui.screen.AddGameScreen
+import com.example.geminitest.ui.screen.AuthScreen
 import com.example.geminitest.ui.screen.EditGameScreen
 import com.example.geminitest.ui.viewmodel.AddGameViewModel
 import com.example.geminitest.ui.viewmodel.GameViewModel
@@ -17,7 +18,20 @@ import com.example.geminitest.ui.viewmodel.GameViewModel
 fun AppNavGraph(
     navController: NavHostController
 ) {
-    NavHost(navController = navController, startDestination = "gameList") {
+    NavHost(navController = navController, startDestination = "auth") {
+
+        composable("auth") {
+            AuthScreen(
+                navigateToGameList = {
+                    navController.navigate("gameList") {
+                        popUpTo("auth") {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+
         composable("gameList") {
             GameListScreen(
                 navigateToAdd = { navController.navigate("addGame") },

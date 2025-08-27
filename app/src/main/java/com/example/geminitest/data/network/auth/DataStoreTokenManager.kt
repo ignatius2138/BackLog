@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
+const val secureTokenPrefsFileName = "secure_token_prefs.pb"
 @Singleton
 class DataStoreTokenManager @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -20,7 +21,7 @@ class DataStoreTokenManager @Inject constructor(
     private val dataStore: DataStore<TokenPrefs> by lazy {
         DataStoreFactory.create(
             serializer = tokenPrefsSerializer,
-            produceFile = { context.dataStoreFile("secure_token_prefs.pb") }
+            produceFile = { context.dataStoreFile(secureTokenPrefsFileName) }
         )
     }
 

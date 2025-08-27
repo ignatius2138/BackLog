@@ -1,6 +1,6 @@
 package com.example.geminitest.data.network
 
-import com.example.geminitest.BuildConfig
+import com.example.geminitest.data.network.auth.TwitchAuthManager
 import io.ktor.client.*
 import java.time.Instant
 import java.time.ZoneId
@@ -8,15 +8,18 @@ import java.util.UUID
 import javax.inject.Inject
 
 class NetworkGameRepository @Inject constructor(
-    private val client: HttpClient
+    private val client: HttpClient,
+    private val authManager: TwitchAuthManager
 ) : IGameRepository {
 
     override suspend fun searchGames(query: String): List<GameData> {
         return try {
+            val accessToken = authManager.getValidAccessToken() ?: return emptyList()
+
             val games = fetchGames(
                 query = query,
-                accessToken = BuildConfig.IGDB_ACCESS_TOKEN,
-                clientId = BuildConfig.IGDB_CLIENT_ID,
+                accessToken = accessToken,
+                clientId = authManager.clientId,
                 client = client
             )
 

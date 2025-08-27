@@ -7,8 +7,9 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
+import javax.inject.Inject
 
-class CryptoManager {
+class CryptoManager @Inject constructor() {
 
     companion object {
         private const val KEY_ALIAS = "token_key"
