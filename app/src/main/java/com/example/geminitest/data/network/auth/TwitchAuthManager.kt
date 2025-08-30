@@ -1,7 +1,6 @@
 package com.example.geminitest.data.network.auth
 
 import android.content.Context
-import android.net.Uri
 import net.openid.appauth.AuthorizationServiceConfiguration
 import androidx.core.net.toUri
 import kotlinx.coroutines.suspendCancellableCoroutine

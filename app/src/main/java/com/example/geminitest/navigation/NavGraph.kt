@@ -1,5 +1,6 @@
 package com.example.geminitest.navigation
 
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -16,6 +17,8 @@ import com.example.geminitest.ui.viewmodel.GameViewModel
 
 @Composable
 fun AppNavGraph(
+    authRedirectIntent: Intent?, // Принимаем Intent
+    onAuthRedirectIntentConsumed: () -> Unit,
     navController: NavHostController
 ) {
     NavHost(navController = navController, startDestination = "auth") {
@@ -28,7 +31,9 @@ fun AppNavGraph(
                             inclusive = true
                         }
                     }
-                }
+                },
+                authRedirectIntent = authRedirectIntent,
+                onAuthRedirectIntentConsumed = onAuthRedirectIntentConsumed
             )
         }
 

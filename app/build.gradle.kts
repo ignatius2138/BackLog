@@ -34,14 +34,10 @@ android {
         versionName = "1.0"
 
         buildConfigField("String", "IGDB_CLIENT_ID", "\"${secretsProps["client_id"] ?: "undefined"}\"")
-        buildConfigField("String", "IGDB_ACCESS_TOKEN", "\"${secretsProps["access_token"] ?: "undefined"}\"")
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
-
-        manifestPlaceholders["appAuthRedirectScheme"] = "com.example.geminitest"
     }
 
     buildTypes {

@@ -1,5 +1,6 @@
 package com.example.geminitest.ui.screen
 
+import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -19,8 +20,10 @@ import com.example.geminitest.ui.viewmodel.AuthViewModel
 @Composable
 fun AuthScreen(
     viewModel: AuthViewModel = hiltViewModel(),
-    navigateToGameList: () -> Unit
-) {
+    navigateToGameList: () -> Unit,
+    authRedirectIntent: Intent?,
+    onAuthRedirectIntentConsumed: () -> Unit
+){
     val authState by viewModel.authState.collectAsState()
 
     val authLauncher = rememberLauncherForActivityResult(
@@ -31,6 +34,13 @@ fun AuthScreen(
             val response = net.openid.appauth.AuthorizationResponse.fromIntent(data)
             val error = net.openid.appauth.AuthorizationException.fromIntent(data)
             viewModel.handleAuthorizationResponse(response, error)
+        }
+    }
+
+    LaunchedEffect(authRedirectIntent) {
+        if (authRedirectIntent != null) {
+            viewModel.handleAuthRedirect(authRedirectIntent)
+            onAuthRedirectIntentConsumed()
         }
     }
 

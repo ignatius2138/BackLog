@@ -60,4 +60,10 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+
+    fun handleAuthRedirect(intent: Intent) {
+        val response = AuthorizationResponse.fromIntent(intent)
+        val error = AuthorizationException.fromIntent(intent)
+        handleAuthorizationResponse(response, error)
+    }
 }

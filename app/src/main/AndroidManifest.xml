@@ -19,26 +19,27 @@
         <activity
             android:name="com.example.geminitest.MainActivity"
             android:exported="true"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.GameBacklog">  <!-- Main theme AFTER splash -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
 
-        <activity
-            android:name="net.openid.appauth.RedirectUriReceiverActivity"
-            android:exported="true">
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="${appAuthRedirectScheme}"
-                    android:host="callback" />
+                    android:scheme="https"
+                    android:host="ignatius2138.github.io"
+                    android:pathPrefix="/callback" />
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="net.openid.appauth.RedirectUriReceiverActivity"
+            tools:node="remove" />
         <!-- You don't need to declare other activities here UNLESS
              you add more activities beyond MainActivity.  Compose Navigation
              handles navigation within MainActivity. -->

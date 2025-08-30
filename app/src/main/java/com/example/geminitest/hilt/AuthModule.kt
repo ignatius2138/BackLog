@@ -16,6 +16,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AuthModule {
+    const val REDIRECT_URL = "https://ignatius2138.github.io/callback"
 
     @Provides
     @Singleton
@@ -26,7 +27,7 @@ object AuthModule {
         return TwitchAuthManager(
             context = context,
             clientId = BuildConfig.IGDB_CLIENT_ID,
-            redirectUri = "com.example.geminitest://oauth2/callback",
+            redirectUri = REDIRECT_URL,
             tokenManager = tokenManager
         )
     }
