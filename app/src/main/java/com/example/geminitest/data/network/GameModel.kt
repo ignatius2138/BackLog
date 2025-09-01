@@ -1,17 +1,22 @@
 package com.example.geminitest.data.network
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Game(
-    val id: Int,
-    val name: String? = null,
-    val cover: Cover? = null
+    val name: String,
+    val cover: Cover? = null,
+    val genres: List<Genre>? = null,
+    val first_release_date: Long? = null,
+    val summary: String? = null
 )
 
 @Serializable
 data class Cover(
-    val id: Int? = null,
-    @SerialName("url") val imageUrl: String? = null
+    val url: String? = null
+)
+
+@Serializable
+data class Genre(
+    val name: String? = null
 )

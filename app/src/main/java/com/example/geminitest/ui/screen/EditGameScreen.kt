@@ -28,32 +28,42 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import com.example.geminitest.GameViewModel
+import com.example.geminitest.ui.viewmodel.GameViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditGameScreen(viewModel: GameViewModel, navController: NavController, gameId: Int) {
-    val game = viewModel.getGameById(gameId).collectAsStateWithLifecycle(initialValue = null).value
+fun EditGameScreen(gameViewModel: GameViewModel = hiltViewModel(), gameId: Int, onNavigateBack: () -> Unit) {
+    val game = gameViewModel.getGameById(gameId).collectAsStateWithLifecycle(initialValue = null).value
     var gameName by remember { mutableStateOf("") }
     var gameGenre by remember { mutableStateOf("") }
+    var releaseYear by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var coverUrl by remember { mutableStateOf("") }
 
     LaunchedEffect(game?.id) {
         game?.let {
             gameName = it.name
             gameGenre = it.genre
+            releaseYear = it.releaseYear.orEmpty()
+            description = it.description.orEmpty()
+            coverUrl = it.coverUrl
         }
     }
 
-    val onGameNameChange = remember { { newName: String -> gameName = newName } }
-    val onGameGenreChange = remember { { newGenre: String -> gameGenre = newGenre } }
-    val onUpdateClick = remember(gameName, gameGenre, game, navController) {
+    val onUpdateClick = remember(gameName, gameGenre, releaseYear, description, coverUrl, game) {
         {
             if (gameName.isNotBlank() && gameGenre.isNotBlank() && game != null) {
-                val updatedGame = game.copy(name = gameName, genre = gameGenre)
-                viewModel.updateGame(updatedGame)
-                navController.popBackStack()
+                val updatedGame = game.copy(
+                    name = gameName,
+                    genre = gameGenre,
+                    releaseYear = releaseYear,
+                    description = description,
+                    coverUrl = coverUrl
+                )
+                gameViewModel.updateGame(updatedGame)
+                onNavigateBack()
             }
         }
     }
@@ -88,15 +98,28 @@ fun EditGameScreen(viewModel: GameViewModel, navController: NavController, gameI
             ) {
                 OutlinedTextField(
                     value = gameName,
-                    onValueChange = onGameNameChange,
+                    onValueChange = { gameName = it },
                     label = { Text("Game Name") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = gameGenre,
-                    onValueChange = onGameGenreChange,
+                    onValueChange = { gameGenre = it },
                     label = { Text("Genre") },
                     modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = releaseYear,
+                    onValueChange = { releaseYear = it },
+                    label = { Text("Release Year") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Description") },
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 5
                 )
                 Button(
                     onClick = onUpdateClick,

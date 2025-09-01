@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    id("com.google.protobuf")
 }
 
 val secretsPropsFile = rootProject.file("secrets.properties")
@@ -33,7 +35,6 @@ android {
 
         buildConfigField("String", "IGDB_CLIENT_ID", "\"${secretsProps["client_id"] ?: "undefined"}\"")
         buildConfigField("String", "IGDB_ACCESS_TOKEN", "\"${secretsProps["access_token"] ?: "undefined"}\"")
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -69,6 +70,22 @@ android {
     }
 }
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.3"
+    }
+
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
+}
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
@@ -86,15 +103,24 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:3.2.3")
     implementation("io.ktor:ktor-client-content-negotiation:3.2.3")
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.2.3")
+    implementation(libs.androidx.ui)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation("io.coil-kt:coil-compose:2.7.0")
 
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.datastore.preferences)
+    implementation("androidx.security:security-crypto:1.1.0")
+    // Jetpack DataStore (основная библиотека)
+    implementation("androidx.datastore:datastore:1.1.7")
+
+    // Protocol Buffers для генерации модели данных
+    implementation("com.google.protobuf:protobuf-javalite:4.32.0")
+    implementation("net.openid:appauth:0.11.1")
 
     // Hilt dependencies
     implementation(libs.dagger.hilt.android)

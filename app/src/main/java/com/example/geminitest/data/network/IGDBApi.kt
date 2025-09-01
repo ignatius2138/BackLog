@@ -5,19 +5,24 @@ import io.ktor.client.request.*
 import io.ktor.client.call.*
 import io.ktor.http.*
 
+const val IGDB_BASE_URL = "https://api.igdb.com/v4/games"
+const val FIELD_LIST = "name, cover.url, genres.name, first_release_date, summary"
+const val SEARCH_LIMIT = 20
 suspend fun fetchGames(
     query: String,
     accessToken: String,
     clientId: String,
     client: HttpClient
 ): List<Game> {
+
+
     val bodyText = """
-        fields name, cover.url;
+        fields $FIELD_LIST;
         search "$query";
-        limit 1;
+        limit $SEARCH_LIMIT;
     """.trimIndent()
 
-    return client.post("https://api.igdb.com/v4/games") {
+    return client.post(IGDB_BASE_URL) {
         headers {
             append(HttpHeaders.Authorization, "Bearer $accessToken")
             append("Client-ID", clientId)
