@@ -21,7 +21,7 @@ fun AppNavGraph(
     onAuthRedirectIntentConsumed: () -> Unit,
     navController: NavHostController
 ) {
-    NavHost(navController = navController, startDestination = "auth") {
+    NavHost(navController = navController, startDestination = "gameList") {
 
         composable("auth") {
             AuthScreen(
